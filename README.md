@@ -1,3 +1,30 @@
+
+# GHCNpy: Modifications by RLion
+
+I hacked away at the code originally provided as described below.
+* Disabled the plotting module
+* Disabled the netCDF4 features (netCDF4 is no longer a package pre-req)
+* Updated code to Python 3
+* Added a front-end Jupyter notebook to do some formatting from .dly -> .csv -> Pandas DataFrame -> .csv
+* Included more of the elements (generally only daily elements, none of the multi-day summary elements)
+
+__Required Python Packages/Libraries:__
+
+- NumPy
+
+- Pandas
+
+- GeoPy
+
+- requests
+
+- matplotlib
+
+- Jupyter
+
+- jupytext (helpful but not necessarily required)
+
+
 # GHCNpy: Weather Station Analysis in Python
 
 GHCNpy pulls in data from the Global Historical Climatology Network - Daily Database. Analysis and visualizations are also made
