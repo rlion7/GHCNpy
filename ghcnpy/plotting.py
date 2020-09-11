@@ -11,7 +11,7 @@ import matplotlib.pyplot as plt
 import matplotlib.colors as mcolors
 import matplotlib.colors as colors
 import pylab
-from mpl_toolkits.basemap import Basemap
+from basemap import Basemap
 
 import ghcnpy as gp
 
@@ -20,7 +20,7 @@ import ghcnpy as gp
 # Plot Temperature Data for a given station
 #################################################
 def plot_temperature(station_id,begin_date,end_date):
-  print("\nPLOTTING TEMPERATURE DATA FOR STATION: ",station_id)
+  print(("\nPLOTTING TEMPERATURE DATA FOR STATION: ",station_id))
 
   # Declare Other Variables
   begin_year=1895
@@ -55,7 +55,7 @@ def plot_temperature(station_id,begin_date,end_date):
   contents = file_handle.readlines()
   file_handle.close()
 
-  for counter in xrange(len(contents)):
+  for counter in range(len(contents)):
 
     element = contents[counter][17:21]
 
@@ -73,7 +73,7 @@ def plot_temperature(station_id,begin_date,end_date):
       month_counter = month-1
 
       char=21
-      for day_counter in xrange(0,31):
+      for day_counter in range(0,31):
         if contents[counter][char:char+5] != "-9999" and contents[counter][char+6:char+7] == " ":
           ghcnd_value[year_counter][month_counter][day_counter][element_counter] = float(contents[counter][char:char+5]) / 10.0
         char = char + 8
@@ -88,8 +88,8 @@ def plot_temperature(station_id,begin_date,end_date):
   record_min_ghcnd = np.zeros((12,31),dtype='f')-(9999.0)
   average_max_ghcnd = np.zeros((12,31),dtype='f')-(9999.0)
   average_min_ghcnd = np.zeros((12,31),dtype='f')-(9999.0)
-  for month_counter in xrange(0,12):
-    for day_counter in xrange(0,31):
+  for month_counter in range(0,12):
+    for day_counter in range(0,31):
 
       record_max_ghcnd[month_counter,day_counter] = ma.max(ghcnd_nonmiss[:,month_counter,day_counter,tmax])
       record_min_ghcnd[month_counter,day_counter] = ma.min(ghcnd_nonmiss[:,month_counter,day_counter,tmin])
@@ -124,7 +124,7 @@ def plot_temperature(station_id,begin_date,end_date):
 
   num_days=0
   num_months=0
-  for year_counter in xrange(begin_yy,end_yy+1):
+  for year_counter in range(begin_yy,end_yy+1):
 
     if year_counter == begin_yy:
       start_month=begin_mm
@@ -135,11 +135,11 @@ def plot_temperature(station_id,begin_date,end_date):
     else:
       start_month=1
       end_month=12
-    for month_counter in xrange(start_month,end_month+1):
+    for month_counter in range(start_month,end_month+1):
       month_pos[num_months] = num_days
       month_names[num_months] = calendar.month_name[month_counter][0:3]+" '"+str(year_counter)[2:4]
 
-      for day_counter in xrange(begin_dd,end_dd+1):
+      for day_counter in range(begin_dd,end_dd+1):
         try:
           # Check if date is valid
           datetime(year=year_counter,month=month_counter,day=day_counter)
@@ -154,7 +154,7 @@ def plot_temperature(station_id,begin_date,end_date):
           pass
       num_months=num_months+1
 
-  x_axis=range(num_days)
+  x_axis=list(range(num_days))
 
   #################################################
   # PLOT
@@ -190,7 +190,7 @@ def plot_temperature(station_id,begin_date,end_date):
   plt.xlim(-5, (num_days))
 
   # Plot Y-Axis Label
-  plt.yticks(range(ymin, ymax, 10), [r'{}$^\circ$'.format(x) for x in range(ymin, ymax, 10)], fontsize=10)
+  plt.yticks(list(range(ymin, ymax, 10)), [r'{}$^\circ$'.format(x) for x in range(ymin, ymax, 10)], fontsize=10)
   plt.ylabel(r'Temperature ($^\circ$F)', fontsize=12)
 
   # Plot X-Axis Label
@@ -198,7 +198,7 @@ def plot_temperature(station_id,begin_date,end_date):
 
   # Plot 2nd Y Axis Labels
   ax3 = ax1.twinx()
-  plt.yticks(range(ymin, ymax, 10), [r'{}$^\circ$'.format(x) for x in range(ymin, ymax, 10)], fontsize=10)
+  plt.yticks(list(range(ymin, ymax, 10)), [r'{}$^\circ$'.format(x) for x in range(ymin, ymax, 10)], fontsize=10)
   plt.ylim(ymin, ymax)
 
   # Plot Title/Subtitle
@@ -215,7 +215,7 @@ def plot_temperature(station_id,begin_date,end_date):
 # Plot Accum. Precip Data for a given station
 #################################################
 def plot_precipitation(station_id):
-  print("\nPLOTTING PRECIPITATION DATA FOR STATION: ",station_id)
+  print(("\nPLOTTING PRECIPITATION DATA FOR STATION: ",station_id))
 
   # Declare Other Variables
   begin_year=1895
@@ -253,7 +253,7 @@ def plot_precipitation(station_id):
 
   valid_end=-9999
   valid_begin=9999
-  for counter in xrange(len(contents)):
+  for counter in range(len(contents)):
 
     element = contents[counter][17:21]
 
@@ -269,7 +269,7 @@ def plot_precipitation(station_id):
       month_counter = month-1
 
       char=21
-      for day_counter in xrange(0,31):
+      for day_counter in range(0,31):
         if contents[counter][char:char+5] != "-9999" and contents[counter][char+6:char+7] == " ": # Remove QC
         #if contents[counter][char:char+5] != "-9999":                                              # Do Not Remove QC
           ghcnd_value[year_counter][month_counter][day_counter][element_counter] = float(contents[counter][char:char+5]) / 10.0
@@ -286,8 +286,8 @@ def plot_precipitation(station_id):
   average_prcp = np.zeros((num_days),dtype='f')-(9999.0)
   day_of_year=0
   day_before=0
-  for month_counter in xrange(0,12):
-    for day_counter in xrange(0,31):
+  for month_counter in range(0,12):
+    for day_counter in range(0,31):
       try:
         # Check if leap-year date is valid
         datetime(year=2012,month=month_counter+1,day=day_counter+1)
@@ -303,11 +303,11 @@ def plot_precipitation(station_id):
   # Create Accumulations
   prcp_accum = np.zeros((num_years,num_days),dtype='f')
   total_accum = np.zeros((num_years),dtype='f')
-  for year_counter in xrange(0,num_years):
+  for year_counter in range(0,num_years):
     day_of_year=0
     day_before=0
-    for month_counter in xrange(0,12):
-      for day_counter in xrange(0,31):
+    for month_counter in range(0,12):
+      for day_counter in range(0,31):
         try:
           # Check if date is valid
           datetime(year=year_counter+begin_year,month=month_counter+1,day=day_counter+1)
@@ -327,8 +327,8 @@ def plot_precipitation(station_id):
   total_accum = ma.masked_values(total_accum, 0.)
 
   #Get Some Stats Needed For Plotting
-  x_axis=range(num_days)
-  x_axis_end=range(last_day)
+  x_axis=list(range(num_days))
+  x_axis_end=list(range(last_day))
 
   # Current Year
   current_loc = num_years-1
@@ -359,7 +359,7 @@ def plot_precipitation(station_id):
   color_pos=np.linspace(0.5,1,num_years)
   order_counter=0
   color_counter=0
-  for year_counter in xrange(0,num_years):
+  for year_counter in range(0,num_years):
     pos=order[order_counter]
     if pos != (num_years-1):
       plt.plot(x_axis, prcp_accum[pos,:], linewidth=0.5, color=colors.rgb2hex(pylab.cm.GnBu(color_pos[color_counter])[0:3]))
@@ -395,7 +395,7 @@ def plot_precipitation(station_id):
   plt.xlim(-5, num_days)
 
   # Plot Y-Axis Label
-  plt.yticks(range(ymin, ymax, 10), [r'{}"'.format(x) for x in range(ymin, ymax, 10)], fontsize=10)
+  plt.yticks(list(range(ymin, ymax, 10)), [r'{}"'.format(x) for x in range(ymin, ymax, 10)], fontsize=10)
   plt.ylabel(r'Accumulated Precip (inches)', fontsize=12)
 
   # Plot X-Axis Label
@@ -405,7 +405,7 @@ def plot_precipitation(station_id):
 
   # Plot 2nd Y Axis Labels
   ax3 = ax1.twinx()
-  plt.yticks(range(ymin, ymax, 10), [r'{}"'.format(x) for x in range(ymin, ymax, 10)], fontsize=10)
+  plt.yticks(list(range(ymin, ymax, 10)), [r'{}"'.format(x) for x in range(ymin, ymax, 10)], fontsize=10)
   plt.ylim(ymin, ymax)
 
   # Plot Title/Subtitle
@@ -424,7 +424,7 @@ def plot_precipitation(station_id):
 # Plot Accum. Snow Data for a given station
 #################################################
 def plot_snowfall(station_id):
-  print("\nPLOTTING SNOWFALL DATA FOR STATION: ",station_id)
+  print(("\nPLOTTING SNOWFALL DATA FOR STATION: ",station_id))
 
   # Declare Other Variables
   begin_year=1895
@@ -462,7 +462,7 @@ def plot_snowfall(station_id):
 
   valid_end=-9999
   valid_begin=9999
-  for counter in xrange(len(contents)):
+  for counter in range(len(contents)):
 
     element = contents[counter][17:21]
 
@@ -478,7 +478,7 @@ def plot_snowfall(station_id):
       month_counter = month-1
 
       char=21
-      for day_counter in xrange(0,31):
+      for day_counter in range(0,31):
         if contents[counter][char:char+5] != "-9999" and contents[counter][char+6:char+7] == " ":
           ghcnd_value[year_counter][month_counter][day_counter][element_counter] = float(contents[counter][char:char+5])
           last_day=day_counter+1
@@ -498,7 +498,7 @@ def plot_snowfall(station_id):
   day_of_year=0
   day_before=0
   for month_counter in [9, 10, 11, 12, 1, 2, 3, 4, 5, 6, 7, 8, 9]:
-    for day_counter in xrange(0,31):
+    for day_counter in range(0,31):
       try:
         # Check if leap-year date is valid
         datetime(year=2012,month=month_counter+1,day=day_counter+1)
@@ -515,13 +515,13 @@ def plot_snowfall(station_id):
   new_year_counter=0
   snow_accum = np.zeros((num_years+1,num_days),dtype='f')
   total_accum = np.zeros((num_years+1),dtype='f')
-  for year_counter in xrange(0,num_years):
-    for month_counter in xrange(0,12):
+  for year_counter in range(0,num_years):
+    for month_counter in range(0,12):
       if month_counter==9: # Month Begins in Oct
         new_year_counter=year_counter+1
         day_of_year=0
         day_before=0
-      for day_counter in xrange(0,31):
+      for day_counter in range(0,31):
         try:
           # Check if date is valid
           datetime(year=year_counter+begin_year,month=month_counter+1,day=day_counter+1)
@@ -541,8 +541,8 @@ def plot_snowfall(station_id):
   total_accum = ma.masked_values(total_accum, 0.)
 
   #Get Some Stats Needed For Plotting
-  x_axis=range(num_days)
-  x_axis_end=range(last_day)
+  x_axis=list(range(num_days))
+  x_axis_end=list(range(last_day))
 
   current_loc = num_years-1
   current_snow = "%6.2f" % total_accum[current_loc]
@@ -571,7 +571,7 @@ def plot_snowfall(station_id):
   color_pos=np.linspace(0.5,1,num_years)
   order_counter=0
   color_counter=0
-  for year_counter in xrange(0,num_years):
+  for year_counter in range(0,num_years):
     pos=order[order_counter]
     if pos != (num_years-1):
       plt.plot(x_axis, snow_accum[pos,:], linewidth=0.5, color=colors.rgb2hex(pylab.cm.GnBu(color_pos[color_counter])[0:3]))
@@ -607,7 +607,7 @@ def plot_snowfall(station_id):
   plt.xlim(-5, num_days)
 
   # Plot Y-Axis Label
-  plt.yticks(range(ymin, ymax, 10), [r'{}"'.format(x) for x in range(ymin, ymax, 10)], fontsize=10)
+  plt.yticks(list(range(ymin, ymax, 10)), [r'{}"'.format(x) for x in range(ymin, ymax, 10)], fontsize=10)
   plt.ylabel(r'Accumulated Snowfall (inches)', fontsize=12)
 
   # Plot X-Axis Label
@@ -617,7 +617,7 @@ def plot_snowfall(station_id):
 
   # Plot 2nd Y Axis Labels
   ax3 = ax1.twinx()
-  plt.yticks(range(ymin, ymax, 10), [r'{}"'.format(x) for x in range(ymin, ymax, 10)], fontsize=10)
+  plt.yticks(list(range(ymin, ymax, 10)), [r'{}"'.format(x) for x in range(ymin, ymax, 10)], fontsize=10)
   plt.ylim(ymin, ymax)
 
   # Plot Title/Subtitle
@@ -644,10 +644,10 @@ def plot_spatial(year,month,day,element,lower_lon=-125,upper_lon=-65,lower_lat=2
   if day < 10:
     day="0"+str(day)
 
-  print("year: ",year)
-  print("month: ",month)
-  print("day: ",day)
-  print("element: ",element)
+  print(("year: ",year))
+  print(("month: ",month))
+  print(("day: ",day))
+  print(("element: ",element))
 
   plot_date=str(year)+str(month)+str(day)
 
@@ -709,7 +709,7 @@ def plot_spatial(year,month,day,element,lower_lon=-125,upper_lon=-65,lower_lat=2
   #################################################
   # Read in GHCND-D Inventory File to get
   # stations that have element requested
-  print("GETTING STATIONS THAT MATCH ELEMENT: ",element)
+  print(("GETTING STATIONS THAT MATCH ELEMENT: ",element))
 
   ghcnd_inventory=gp.get_ghcnd_inventory()
   ghcnd_stations = ghcnd_inventory[ghcnd_inventory[:,3] == element]
@@ -731,7 +731,7 @@ def plot_spatial(year,month,day,element,lower_lon=-125,upper_lon=-65,lower_lat=2
   file_handle.close()
 
   valid_stns=0
-  for counter in xrange(len(ghcnd_contents)):
+  for counter in range(len(ghcnd_contents)):
 
     ghcnd_line = ghcnd_contents[counter].split(',')
     if ghcnd_line[1] == plot_date and ghcnd_line[2] == element:
@@ -780,7 +780,7 @@ def plot_spatial(year,month,day,element,lower_lon=-125,upper_lon=-65,lower_lat=2
 
   # Adds the colormap legend
   cmleg = np.zeros((1,len(cbar_vals)),dtype='f')
-  for i in xrange(0,(len(cbar_vals))):
+  for i in range(0,(len(cbar_vals))):
       cmleg[0,i] = float(cbar_vals[i])
 
   # Add Colorbar
@@ -806,8 +806,8 @@ def plot_spatial(year,month,day,element,lower_lon=-125,upper_lon=-65,lower_lat=2
 def plot_spatial_derived(year,element,lower_lon=-125,upper_lon=-65,lower_lat=25,upper_lat=50,dpi=200,proj='merc'):
   print("\nPLOT SPATIAL DERIVED")
 
-  print("year: ",year)
-  print("element: ",element)
+  print(("year: ",year))
+  print(("element: ",element))
 
   days_in_year=(datetime(year, 12, 31)-datetime(year, 1, 1)).days+1
 
@@ -872,7 +872,7 @@ def plot_spatial_derived(year,element,lower_lon=-125,upper_lon=-65,lower_lat=25,
   station_counter=-1
   old_id = "XXXXXXXXXXX"
   num_valid=0
-  for counter in xrange(len(ghcnd_contents)):
+  for counter in range(len(ghcnd_contents)):
     ghcnd_line = ghcnd_contents[counter].split(',')
 
     if ghcnd_line[2] == "TMAX" or ghcnd_line[2] == "TMIN":
@@ -898,7 +898,7 @@ def plot_spatial_derived(year,element,lower_lon=-125,upper_lon=-65,lower_lat=25,
   ghcnd_derived_lons = np.zeros((num_valid),dtype='f')-(9999.0)
   ghcnd_derived_values = np.zeros((num_valid),dtype='f')-(9999.0)
 
-  for station_counter in xrange(0,num_valid):
+  for station_counter in range(0,num_valid):
     ghcnd_meta = ghcnd_stations[ghcnd_stations[:,0] == ghcnd_valid_id[station_counter]]
 
     ghcnd_derived_lats[station_counter]=float(ghcnd_meta[0][1])
@@ -947,7 +947,7 @@ def plot_spatial_derived(year,element,lower_lon=-125,upper_lon=-65,lower_lat=25,
 
   # Adds the colormap legend
   cmleg = np.zeros((1,len(cbar_vals)),dtype='f')
-  for i in xrange(0,(len(cbar_vals))):
+  for i in range(0,(len(cbar_vals))):
       cmleg[0,i] = float(cbar_vals[i])
 
   # Add Colorbar
@@ -973,8 +973,8 @@ def plot_spatial_derived(year,element,lower_lon=-125,upper_lon=-65,lower_lat=25,
 def plot_spatial_freeze(year,element,lower_lon=-125,upper_lon=-65,lower_lat=25,upper_lat=50,dpi=200,proj='merc'):
   print("\nPLOT SPATIAL FREEZE")
 
-  print("year: ",year)
-  print("element: ",element)
+  print(("year: ",year))
+  print(("element: ",element))
 
   days_in_year=(datetime(year, 12, 31)-datetime(year, 1, 1)).days+1
 
@@ -1038,7 +1038,7 @@ def plot_spatial_freeze(year,element,lower_lon=-125,upper_lon=-65,lower_lat=25,u
   station_counter=-1
   old_id = "XXXXXXXXXXX"
   num_valid=0
-  for counter in xrange(len(ghcnd_contents)):
+  for counter in range(len(ghcnd_contents)):
     ghcnd_line = ghcnd_contents[counter].split(',')
 
     if ghcnd_line[2] == "TMIN":
@@ -1066,7 +1066,7 @@ def plot_spatial_freeze(year,element,lower_lon=-125,upper_lon=-65,lower_lat=25,u
   ghcnd_derived_lons = np.zeros((num_valid),dtype='f')-(9999.0)
   ghcnd_derived_values = np.zeros((num_valid),dtype='f')-(9999.0)
 
-  for station_counter in xrange(0,num_valid):
+  for station_counter in range(0,num_valid):
     ghcnd_meta = ghcnd_stations[ghcnd_stations[:,0] == ghcnd_valid_id[station_counter]]
 
     ghcnd_derived_lats[station_counter]=float(ghcnd_meta[0][1])
@@ -1099,7 +1099,7 @@ def plot_spatial_freeze(year,element,lower_lon=-125,upper_lon=-65,lower_lat=25,u
 
   # Adds the colormap legend
   cmleg = np.zeros((1,len(cbar_vals)),dtype='f')
-  for i in xrange(0,(len(cbar_vals))):
+  for i in range(0,(len(cbar_vals))):
       cmleg[0,i] = float(cbar_vals[i])
 
   # Add Colorbar

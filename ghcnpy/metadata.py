@@ -1,69 +1,93 @@
+# ---
+# jupyter:
+#   jupytext:
+#     formats: ipynb,py
+#     text_representation:
+#       extension: .py
+#       format_name: light
+#       format_version: '1.5'
+#       jupytext_version: 1.6.0
+#   kernelspec:
+#     display_name: Python 3
+#     language: python
+#     name: python3
+# ---
+
+# +
 # Import Modules
 import re
 import json
 
 import requests as r
 
+from .iotools import get_ghcnd_stations
 from geopy.distance import great_circle
 
-import ghcnpy as gp
 
-#################################################
-# MODULE: find_station
-# Find stations by certain Search Criteria
-#    1 Arg: Search by Name
-#    3 Arg: Search by Lat Lon Distance limit
-#################################################
+# -
+
 def find_station(*args):
-  stns=0
-  if len(args) ==1:
-    station_name=args[0]
-    print("LOOKUP BY STATION NAME: ",station_name)
-    station_name=station_name.upper()
-    ghcnd_stations=gp.get_ghcnd_stations()
+    """Find stations by certain Search Criteria
+        1 Arg: Search by Name
+        3 Arg: Search by Lat Lon Distance limit
+    """
+    
+    stns=0
+    if len(args) ==1:
+        station_name=args[0]
+        print("LOOKUP BY STATION NAME: ",station_name)
+        station_name=station_name.upper()
+        ghcnd_stations=get_ghcnd_stations()
 
-    stns=filter(lambda x: re.search(station_name,x), ghcnd_stations[:,5])
-    print("GHCND ID          LAT        LON    ELEV  ST       STATION NAME")
-    print("###############################################################")
-    for station_counter in xrange(len(stns)):
-      ghcnd_meta = ghcnd_stations[ghcnd_stations[:,5]== stns[station_counter]]
-      print(ghcnd_meta[0][0],ghcnd_meta[0][1],ghcnd_meta[0][2],ghcnd_meta[0][3],ghcnd_meta[0][4],ghcnd_meta[0][5])
+        stns=[x for x in ghcnd_stations[:,5] if re.search(station_name,x)]
+        print("GHCND ID          LAT        LON    ELEV  ST       STATION NAME")
+        print("###############################################################")
+        for station_counter in range(len(stns)):
+            ghcnd_meta = ghcnd_stations[ghcnd_stations[:,5]== stns[station_counter]]
+            print(ghcnd_meta[0][0],ghcnd_meta[0][1],ghcnd_meta[0][2],ghcnd_meta[0][3],ghcnd_meta[0][4],ghcnd_meta[0][5])
 
-  elif len(args)==3:
-    station_lat=args[0]
-    station_lon=args[1]
-    distance_limit=args[2]
+    elif len(args)==3:
+        station_lat=args[0]
+        station_lon=args[1]
+        distance_limit=args[2]
 
-    print("LOOKUP BY STATION LAT: ",station_lat," LON: ",station_lon, " DIST LIMIT (mi): ",distance_limit)
+        print("LOOKUP BY STATION LAT: ",station_lat," LON: ",station_lon, " DIST LIMIT (km): ",distance_limit)
 
-    target_latlon = (float(station_lat), float(station_lon))
-    ghcnd_stations=gp.get_ghcnd_stations()
+        target_latlon = (float(station_lat), float(station_lon))
+        ghcnd_stations=get_ghcnd_stations()
 
-    print("GHCND ID          LAT        LON    ELEV  ST       STATION NAME")
-    print("###############################################################")
-    for ghcnd_counter in xrange(ghcnd_stations[:,0].size):
-      candidate_latlon=(ghcnd_stations[ghcnd_counter][1], ghcnd_stations[ghcnd_counter][2])
-      dist=great_circle(target_latlon, candidate_latlon).miles
-      if dist <= distance_limit:
-        print(ghcnd_stations[ghcnd_counter][0],ghcnd_stations[ghcnd_counter][1],ghcnd_stations[ghcnd_counter][2],ghcnd_stations[ghcnd_counter][3],ghcnd_stations[ghcnd_counter][4],ghcnd_stations[ghcnd_counter][5])
+        print("GHCND ID          LAT        LON    ELEV  ST       STATION NAME        DIST")
+        print("###########################################################################")
+        for ghcnd_counter in range(ghcnd_stations[:,0].size):
+            candidate_latlon=(ghcnd_stations[ghcnd_counter][1], ghcnd_stations[ghcnd_counter][2])
+            dist=great_circle(target_latlon, candidate_latlon).kilometers
+            if dist <= distance_limit:
+                print(ghcnd_stations[ghcnd_counter][0],
+                      ghcnd_stations[ghcnd_counter][1],
+                      ghcnd_stations[ghcnd_counter][2],
+                      ghcnd_stations[ghcnd_counter][3],
+                      ghcnd_stations[ghcnd_counter][4],
+                      ghcnd_stations[ghcnd_counter][5],
+                      "{:.2f}".format(dist),
+                     )
 
-  else:
-    print("USAGE\n  NAME or\n  LAT LON DIST")
+    else:
+        print("USAGE\n  NAME or\n  LAT LON DIST")
+        return None
+    
     return None
-  return None
 
-#################################################
 # MODULE: get_metadata
 # Get Metadata From Station
 # 2 sources
 #    - ghcnd-stations.txt
 #    - Historical Observing Metadata Repository
 #      (HOMR)
-#################################################
+# ################################################
 def get_metadata(station_id):
 
   # Get Metadata info from station Inventory file
-  ghcnd_stations=gp.get_ghcnd_stations()
+  ghcnd_stations=get_ghcnd_stations()
   ghcnd_meta = ghcnd_stations[ghcnd_stations[:,0] == station_id]
 
   ghcnd_name="N/A"
@@ -126,8 +150,8 @@ def get_metadata(station_id):
   has_wban=False
   try:
     identifiers=homr_json['stationCollection']['stations'][0]['identifiers']
-    for counter in xrange(0,10):
-      for key, value in homr_json['stationCollection']['stations'][0]['identifiers'][counter].iteritems():
+    for counter in range(0,10):
+      for key, value in homr_json['stationCollection']['stations'][0]['identifiers'][counter].items():
         if key == "idType" and homr_json['stationCollection']['stations'][0]['identifiers'][counter][key] == "COOP":
           has_coop=True
         if key == "idType" and homr_json['stationCollection']['stations'][0]['identifiers'][counter][key] == "WBAN":
